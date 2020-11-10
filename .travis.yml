@@ -1,0 +1,34 @@
+language: node_js
+node_js:
+  - 'node'
+
+notifications:
+  email: false
+
+cache:
+  yarn: true
+
+before_cache:
+  - rm -rf ./node_modules/.cache
+
+before_install:
+  - export TZ="Asia/Shanghai"
+  - date
+
+install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  - yarn install --frozen-lockfile
+
+script:
+  - yarn run build
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  keep_history: false
+  fqdn: act.owmod.net
+  local_dir: $TRAVIS_BUILD_DIR/dist
+  on:
+    branch: master
